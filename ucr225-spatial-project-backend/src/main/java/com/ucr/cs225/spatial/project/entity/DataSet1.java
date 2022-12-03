@@ -22,7 +22,6 @@ public class DataSet1 {
     private int id;
     private String state;
     private String city;
-    private String address;
     private float  latitude;
     private float longitude;
     private Date date;

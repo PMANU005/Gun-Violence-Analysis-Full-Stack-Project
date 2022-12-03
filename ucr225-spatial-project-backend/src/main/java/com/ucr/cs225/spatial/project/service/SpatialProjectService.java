@@ -20,15 +20,15 @@ public class SpatialProjectService {
 
 
 
-    public Set<Location> getResults(FilterRequest r) {
+    public List<Location> getResults(FilterRequest r) {
         String state=r.getState();
         String city=r.getCity();
         Date endDate= r.getEndDate();
         Date startDate=r.getStartDate();
         Map<Float,Set<Float>> latitudeMap=new HashMap<>();
         Set<Location> finalResult=new HashSet<>();
-        List<Location> s;
         List<DataSet1> li1;
+        //Calling corresponding repository methods based on variables given by user.
         if(startDate!=null){
             if(city!=null){
                 if(state!=null){
@@ -65,18 +65,10 @@ public class SpatialProjectService {
                 }
             }
         }
+        List<Location> l1=li1.stream().map(l->convertEntityToLocation(l)).collect(Collectors.toList());
+        return l1;
 
-        s= li1.stream().map(l->convertEntityToLocation(l)).collect(Collectors.toList());
-        for(Location l : s){
-            addingintoMap(latitudeMap,l);
-        }
-        for(Map.Entry<Float,Set<Float>> i:latitudeMap.entrySet()){
-            for(Float j : i.getValue()){
-                Location lo =new Location(i.getKey(),j);
-                finalResult.add(lo);
-            }
-        }
-        return finalResult;
+
     }
 
     public Location convertEntityToLocation(DataSet1 set1){
@@ -84,16 +76,13 @@ public class SpatialProjectService {
 
         return l;
     }
-    public  void  addingintoMap(Map<Float,Set<Float>> m,Location l) {
-        if (m.containsKey(l.getLatitude())) {
-            m.get(l.getLatitude()).add(l.getLongitude());
-        }
-        else{
-            Set<Float> s= new HashSet<>();
-            s.add(l.getLongitude());
-            m.put(l.getLatitude(),s);
-        }
+
+
+    public List<DataSet1> getAllResults(){
+        return repository1.findAll();
     }
 
 
-}
+    }
+
+
